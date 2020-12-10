@@ -1,0 +1,92 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhotoResizer"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:ViewModels="clr-namespace:PhotoResizer.ViewModels" x:Class="PhotoResizer.MainWindow"
+        mc:Ignorable="d"
+        Title="Picture" Height="600" Width="1000" FontFamily="The Medic Demo"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <ViewModels:PhotoViewModel x:Key="PhotoViewM" />
+        <local:App x:Key="PhotoApp" />
+    </Window.Resources>
+    <Grid Background="BlanchedAlmond">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.RowSpan="2">
+            <TextBlock Text="Resizer" HorizontalAlignment="Center" Margin="42,10,42,526" FontSize="25"/>
+            <Button Style="{StaticResource ButtonGray}" Content="Add Image" HorizontalAlignment="Left" Margin="42,48,0,0" VerticalAlignment="Top" Width="118" Command="{Binding AddFileCommand, UpdateSourceTrigger=PropertyChanged}" Height="21"/>
+            <Button Style="{StaticResource ButtonGray}" Content="Remove Image" HorizontalAlignment="Left" Margin="42,69,0,0" VerticalAlignment="Top" Width="118" Command="{Binding RemoveFileCommand}" CommandParameter="{Binding ElementName=ListViewImages, Path=SelectedItem.FileName}" Height="24"/>
+            <Button Style="{StaticResource ButtonGray}" Content="Clear Images" HorizontalAlignment="Left" Margin="42,94,0,0" VerticalAlignment="Top" Width="118" Command="{Binding ClearFileCommand}" CommandParameter="{Binding ElementName=ListViewImages, Path=SelectedItem.FileName}" Height="24"/>
+        </Grid>
+        <ScrollViewer Grid.Column="1" Grid.Row="1" Background="#FFF1f1f1">
+            <StackPanel>
+                <TextBlock Text="{Binding ElementName=ListViewImages, Path=SelectedItem.FileName}" Margin="10" FontSize="22" FontWeight="Medium"/>
+                <StackPanel Margin="20 0">
+                    <ListView x:Name="ListViewImages" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="2,2,2,0" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction 
+                        Command="{Binding OpenFileCommand}"
+                        CommandParameter="{Binding ElementName=ListViewImages, Path=SelectedItem.FileName}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border x:Name="test" Margin="10" Width="115" Height="160">
+                                    <StackPanel>
+                                        <Border Width="100" Height="100" CornerRadius="5" Margin="5" RenderTransformOrigin="0.5,0.5">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="1" ShadowDepth="1"/>
+                                            </Border.Effect>
+                                            <Border.Background>
+                                                <ImageBrush ImageSource="{Binding Mini}"/>
+                                            </Border.Background>
+                                            <Border.Style>
+                                                <Style TargetType="{x:Type Border}">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="False">
+                                                            <Setter Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                        </Border>
+                                        <TextBlock  Margin="5" Text="{Binding FileNameFull, StringFormat=\{0:C\}}" FontSize="15" FontFamily="Franklin Gothic Medium"/>
+
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        <Border  HorizontalAlignment="Stretch" Grid.RowSpan="2" VerticalAlignment="Stretch" CornerRadius="2" BorderThickness="2"/>
+    </Grid>
+</Window>
